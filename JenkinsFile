@@ -1,0 +1,69 @@
+pipeline {
+
+    agent any
+
+    parameters {
+        string(
+            name: 'NAME',
+            defaultValue: 'Payal',
+            description: 'Enter your name'
+        )
+
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'staging', 'prod'],
+            description: 'Select environment'
+        )
+
+        string(
+            name: 'VERSION',
+            defaultValue: '1.0',
+            description: 'Enter application version'
+        )
+    }
+
+    stages {
+
+        stage('Show Parameters') {
+            steps {
+                echo "=============================="
+                echo "       PARAMETER DEMO"
+                echo "=============================="
+
+                echo "Name        : ${params.NAME}"
+                echo "Environment : ${params.ENVIRONMENT}"
+                echo "Version     : ${params.VERSION}"
+
+                echo "=============================="
+            }
+        }
+
+        stage('Test Deployment') {
+            steps {
+
+                script {
+
+                    if (params.ENVIRONMENT == 'prod') {
+                        echo "Production deployment selected!"
+                    } else {
+                        echo "Non-production deployment selected."
+                    }
+
+                    echo "Deploying ${params.NAME}"
+                    echo "Version: ${params.VERSION}"
+                    echo "Environment: ${params.ENVIRONMENT}"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline completed successfully!"
+        }
+
+        failure {
+            echo "Pipeline failed!"
+        }
+    }
+}
